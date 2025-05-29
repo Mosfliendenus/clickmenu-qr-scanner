@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClickMenu - Escáner QR</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Escanear Menú Digital</h1>
+        <div id="camera-container">
+            <video id="video" autoplay playsinline></video>
+            <canvas id="canvas" hidden></canvas>
+        </div>
+        <div id="result-container">
+            <p id="result-text">Enfoca un código QR de ClickMenu</p>
+            <button id="retry-btn" hidden>Reintentar</button>
+        </div>
+    </div>
+    
+    <!-- Librería QR -->
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+    <!-- Nuestro script -->
+    <script src="scanner.js"></script>
+</body>
+</html>
