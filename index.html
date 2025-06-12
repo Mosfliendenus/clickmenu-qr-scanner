@@ -8,20 +8,29 @@
 </head>
 <body>
     <div class="container">
-        <h1>Escanear Menú Digital</h1>
+        <!-- Título de bienvenida agregado -->
+        <div class="welcome-header">
+            <h1>Bienvenido a Click Menú</h1>
+            <p>Escanea el código QR de tu menú digital</p>
+        </div>
+        
         <div id="camera-container">
             <video id="video" autoplay playsinline></video>
             <canvas id="canvas" hidden></canvas>
+            
+            <!-- Texto debajo del escáner -->
+            <div class="scan-instruction">
+                <p>Escanea tu menú</p>
+            </div>
         </div>
+        
         <div id="result-container">
-            <p id="result-text">Enfoca un código QR de ClickMenu</p>
+            <p id="result-text">Enfoca el código QR dentro del marco</p>
             <button id="retry-btn" hidden>Reintentar</button>
         </div>
     </div>
     
-    <!-- Librería QR -->
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
-    <!-- Nuestro script -->
     <script src="scanner.js"></script>
 </body>
 </html>
