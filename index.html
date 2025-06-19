@@ -3,34 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ClickMenu - Escáner QR</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Click Menú</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Librería para escanear QR (html5-qrcode) -->
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 </head>
 <body>
     <div class="container">
-        <!-- Título de bienvenida agregado -->
-        <div class="welcome-header">
-            <h1>Bienvenido a Click Menú</h1>
-            <p>Escanea el código QR de tu menú digital</p>
-        </div>
-        
-        <div id="camera-container">
-            <video id="video" autoplay playsinline></video>
-            <canvas id="canvas" hidden></canvas>
-            
-            <!-- Texto debajo del escáner -->
-            <div class="scan-instruction">
-                <p>Escanea tu menú</p>
+        <header>
+            <h1>Click Menú</h1>
+            <p>Escanea un código QR para ver el menú digital</p>
+        </header>
+        <main>
+            <button id="scan-button" class="btn">Escanear QR</button>
+            <div id="qr-reader" class="qr-reader hidden"></div>
+            <div id="menu-display" class="menu-display hidden">
+                <h2>Menú Digital</h2>
+                <div id="menu-content"></div>
             </div>
-        </div>
-        
-        <div id="result-container">
-            <p id="result-text">Enfoca el código QR dentro del marco</p>
-            <button id="retry-btn" hidden>Reintentar</button>
-        </div>
+        </main>
     </div>
-    
-    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
-    <script src="scanner.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>
