@@ -1,101 +1,75 @@
-// Elementos del DOM
-const video = document.getElementById('video');
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
-const resultText = document.getElementById('result-text');
-const retryBtn = document.getElementById('retry-btn');
+// Seleccionar elementos del DOM
+const scanButton = document.getElementById('scan-button');
+const qrReader = document.getElementById('qr-reader');
+const menuDisplay = document.getElementById('menu-display');
+const menuContent = document.getElementById('menu-content');
 
-// 1. Solicitar acceso a la cámara
-async function initCamera() {
+// Inicializar el escáner de QR
+const html5QrCode = new Html5Qrcode('qr-reader');
+
+// Función para mostrar u ocultar secciones
+function toggleSections(showScanner) {
+    qrReader.classList.toggle('hidden', !showScanner);
+    scanButton.classList.toggle('hidden', showScanner);
+    menuDisplay.classList.add('hidden');
+}
+
+// Función para manejar el resultado del escaneo
+function onScanSuccess(decodedText, decodedResult) {
+    // Detener el escáner
+    html5QrCode.stop().then(() => {
+        toggleSections(false);
+        displayMenu(decodedText);
+    }).catch(err => console.error('Error al detener el escáner:', err));
+}
+
+// Función para mostrar el menú digital
+function displayMenu(url) {
+    // Validar si es una URL válida
     try {
-        const stream = await navigator.mediaDevices.getUserMedia({ 
-            video: { 
-                facingMode: "environment",
-                width: { ideal: 1280 },
-                height: { ideal: 720 }
-            } 
-        });
-        video.srcObject = stream;
-        video.play();
-        requestAnimationFrame(scanQR);
-    } catch (err) {
-        console.error("Error al acceder a la cámara:", err);
-        resultText.innerHTML = "Error: " + err.message + "<br>Por favor habilita los permisos de cámara";
-        retryBtn.hidden = false;
+        new URL(url);
+        // Simular carga de menú (en un caso real, harías una petición HTTP)
+        const menuData = {
+            title: 'Menú Digital',
+            items: [
+                { name: 'Café Americano', price: '$3.00' },
+                { name: 'Croissant', price: '$2.50' },
+                { name: 'Jugo Natural', price: '$4.00' }
+            ]
+        };
+
+        // Guardar en localStorage
+        saveMenu(url, menuData);
+
+        // Mostrar en la interfaz
+        menuContent.innerHTML = `
+            <h3>${menuData.title}</h3>
+            <ul>
+                ${menuData.items.map(item => `<li>${item.name} - ${item.price}</li>`).join('')}
+            </ul>
+            <a href="${url}" target="_blank">Ver menú completo</a>
+        `;
+        menuDisplay.classList.remove('hidden');
+    } catch (e) {
+        menuContent.innerHTML = '<p>El código QR no contiene una URL válida.</p>';
+        menuDisplay.classList.remove('hidden');
     }
 }
 
-// 2. Escanear QR
-function scanQR() {
-    if (video.readyState === video.HAVE_ENOUGH_DATA) {
-        canvas.height = video.videoHeight;
-        canvas.width = video.videoWidth;
-        
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        
-        // Usar jsQR para decodificar
-        const code = jsQR(imageData.data, imageData.width, imageData.height, {
-            inversionAttempts: "dontInvert",
-        });
-        
-        if (code) {
-            if (validateURL(code.data)) {
-                resultText.textContent = "Menú encontrado! Redirigiendo...";
-                setTimeout(() => {
-                    window.location.href = code.data;
-                }, 1000);
-            } else {
-                resultText.textContent = "QR no válido: Debe ser un menú ClickMenu";
-                retryBtn.hidden = false;
-                video.pause();
-            }
-        } else {
-            requestAnimationFrame(scanQR);
-        }
-    } else {
-        requestAnimationFrame(scanQR);
-    }
+// Guardar menú en localStorage
+function saveMenu(url, menuData) {
+    const menus = JSON.parse(localStorage.getItem('menus') || '{}');
+    menus[url] = menuData;
+    localStorage.setItem('menus', JSON.stringify(menus));
 }
 
-// 3. Validar URL
-function validateURL(url) {
-    try {
-        const urlObj = new URL(url);
-        return urlObj.hostname.includes('clickmenu.mx') && 
-               urlObj.pathname.includes('/menu/');
-    } catch {
-        return false;
-    }
-}
-
-// 4. Botón de reintento
-retryBtn.addEventListener('click', () => {
-    retryBtn.hidden = true;
-    resultText.textContent = "Enfoca un código QR de ClickMenu";
-    video.play();
-    requestAnimationFrame(scanQR);
-});
-
-// 5. Iniciar cuando todo esté listo
-document.addEventListener('DOMContentLoaded', () => {
-    // Verificar si jsQR está cargado
-    if (typeof jsQR === 'function') {
-        initCamera();
-    } else {
-        // Cargar jsQR dinámicamente si falla
-        const script = document.createElement('script');
-        script.src = 'https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js';
-        script.onload = initCamera;
-        document.head.appendChild(script);
-    }
-});
-
-// 6. Manejar cambios de orientación en móviles
-window.addEventListener('orientationchange', () => {
-    // Reiniciar la cámara al cambiar orientación
-    if (video.srcObject) {
-        video.srcObject.getTracks().forEach(track => track.stop());
-    }
-    initCamera();
+// Evento para iniciar el escaneo
+scanButton.addEventListener('click', () => {
+    toggleSections(true);
+    html5QrCode.start(
+        { facingMode: 'environment' }, // Usar cámara trasera
+        { fps: 10, qrbox: { width: 250, height: 250 } }, // Configuración
+        onScanSuccess,
+        (errorMessage) => console.warn('Error en escaneo:', errorMessage)
+    ).catch(err => console.error('Error al iniciar el escáner:', err));
 });
