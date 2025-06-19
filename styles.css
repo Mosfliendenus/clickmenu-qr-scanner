@@ -1,34 +1,106 @@
 /* Agrega esto al inicio de tu CSS */
-.welcome-header {
-    text-align: center;
-    margin-bottom: 25px;
+/* Reset y estilos base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
 }
 
-.welcome-header h1 {
-    color: #2A2D7C;
-    font-size: 2.2rem;
+body {
+    background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.container {
+    max-width: 800px;
+    width: 100%;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    text-align: center;
+}
+
+/* Encabezado */
+header h1 {
+    font-size: 2.5rem;
+    color: #2c3e50;
     margin-bottom: 10px;
 }
 
-.welcome-header p {
-    color: #555;
+header p {
+    color: #7f8c8d;
+    font-size: 1.1rem;
+}
+
+/* Botón principal */
+.btn {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 15px 30px;
     font-size: 1.2rem;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: transform 0.3s, background 0.3s;
+    margin: 20px 0;
 }
 
-.scan-instruction {
-    position: absolute;
-    bottom: -40px; /* Posición debajo del escáner */
-    left: 0;
-    right: 0;
-    text-align: center;
-    font-size: 1.3rem;
-    color: #FF6B35;
-    font-weight: bold;
+.btn:hover {
+    background: #2980b9;
+    transform: scale(1.05);
 }
 
-/* Actualiza este selector para dar más espacio */
-#camera-container {
-    position: relative;
-    margin: 20px auto 50px; /* Más margen inferior */
-    /* ... resto del código ... */
+/* Escáner QR */
+.qr-reader {
+    width: 100%;
+    max-width: 400px;
+    margin: 20px auto;
+    border: 2px solid #3498db;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Menú digital */
+.menu-display {
+    margin-top: 20px;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 10px;
+}
+
+.menu-display h2 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+}
+
+#menu-content {
+    color: #34495e;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+/* Responsivo */
+@media (max-width: 600px) {
+    .container {
+        padding: 20px;
+    }
+
+    header h1 {
+        font-size: 2rem;
+    }
+
+    .btn {
+        padding: 12px 25px;
+        font-size: 1rem;
+    }
 }
