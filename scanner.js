@@ -1,8 +1,16 @@
 // Seleccionar elementos del DOM
+// Seleccionar elementos del DOM
 const scanButton = document.getElementById('scan-button');
 const qrReader = document.getElementById('qr-reader');
 const menuDisplay = document.getElementById('menu-display');
 const menuContent = document.getElementById('menu-content');
+
+// Verificar si los elementos existen
+if (!scanButton || !qrReader || !menuDisplay || !menuContent) {
+    console.error('Error: Uno o más elementos del DOM no se encontraron.');
+    alert('Error en la carga de la aplicación. Revisa la consola para más detalles.');
+    return;
+}
 
 // Inicializar el escáner de QR
 const html5QrCode = new Html5Qrcode('qr-reader');
@@ -16,7 +24,7 @@ function toggleSections(showScanner) {
 
 // Función para manejar el resultado del escaneo
 function onScanSuccess(decodedText, decodedResult) {
-    // Detener el escáner
+    console.log('Código QR escaneado:', decodedText);
     html5QrCode.stop().then(() => {
         toggleSections(false);
         displayMenu(decodedText);
@@ -25,10 +33,8 @@ function onScanSuccess(decodedText, decodedResult) {
 
 // Función para mostrar el menú digital
 function displayMenu(url) {
-    // Validar si es una URL válida
     try {
         new URL(url);
-        // Simular carga de menú (en un caso real, harías una petición HTTP)
         const menuData = {
             title: 'Menú Digital',
             items: [
@@ -37,11 +43,7 @@ function displayMenu(url) {
                 { name: 'Jugo Natural', price: '$4.00' }
             ]
         };
-
-        // Guardar en localStorage
         saveMenu(url, menuData);
-
-        // Mostrar en la interfaz
         menuContent.innerHTML = `
             <h3>${menuData.title}</h3>
             <ul>
@@ -65,11 +67,18 @@ function saveMenu(url, menuData) {
 
 // Evento para iniciar el escaneo
 scanButton.addEventListener('click', () => {
+    console.log('Botón de escanear clicado');
     toggleSections(true);
     html5QrCode.start(
-        { facingMode: 'environment' }, // Usar cámara trasera
-        { fps: 10, qrbox: { width: 250, height: 250 } }, // Configuración
+        { facingMode: 'environment' },
+        { fps: 10, qrbox: { width: 250, height: 250 } },
         onScanSuccess,
         (errorMessage) => console.warn('Error en escaneo:', errorMessage)
-    ).catch(err => console.error('Error al iniciar el escáner:', err));
+    ).then(() => {
+        console.log('Escáner iniciado correctamente');
+    }).catch(err => {
+        console.error('Error al iniciar el escáner:', err);
+        alert('No se pudo iniciar el escáner. Revisa la consola para más detalles.');
+        toggleSections(false);
+    });
 });
